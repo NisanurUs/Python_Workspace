@@ -95,18 +95,46 @@ for adim in range(1000):
         eski_satir_index, eski_sutun_index=satir_index,sutun_index
         satir_index,sutun_index=hareket_et(satir_index, sutun_index, hareket_index)
         odul=labirent[satir_index,sutun_index]
-        eski_q_degeri=q_degerleri[eski_satir_index,eski_sutun_index]
+        eski_q_degeri=q_degerleri[eski_satir_index,eski_sutun_index,hareket_index]
         fark= odul + (azalma_degeri * np.max(q_degerleri[satir_index,sutun_index])) - eski_q_degeri
         yeni_q_degeri = eski_q_degeri + (ogrenme_orani + fark)
-        q_degerleri[eski_satir_index,eski_sutun_index] = yeni_q_degeri
+        q_degerleri[eski_satir_index,eski_sutun_index,hareket_index] = yeni_q_degeri
 
 
 print("Eğitim tamamlandı...")
     
-    
-    
-    
+#%%
+baslangic_satir, baslangic_sutun =input("Başlangıç konumunu girin :").split()
+baslangic_satir=int(baslangic_satir)
+baslangic_sutun=int(baslangic_sutun)
+enkisarota=en_kisa_yol(int(baslangic_satir), int(baslangic_sutun))
+if not enkisarota:
+    print("Girdiğiniz koordinat geçersiz...")
+else:
+    print("Çıkışa giden yol")
+    for i in range(len(enkisarota)-1):
+        print(enkisarota[i])
+   
 
 
-        
+#%%
+import matplotlib.pyplot as plt
+fig, ax = plt.subplots(figsize=(12,12))
+ax.imshow(labirent, cmap='gray')
+ax.set_xticks(range(labirent_sutun_sayisi))
+ax.set_yticks(range(labirent_satir_sayisi))
+ax.grid(color='k', linestyle='-', linewidth=1)
+# Engelleri ve hedefi ekle
+for satir in range(labirent_satir_sayisi):
+    for sutun in range(labirent_sutun_sayisi):
+        if labirent[satir, sutun] == -1:
+            ax.add_artist(plt.Circle((sutun, satir), 0.3, color='r'))
+        elif labirent[satir, sutun] == 100:
+            ax.add_artist(plt.Circle((sutun, satir), 0.3, color='b'))
+# Başlangıç noktasını ekle
+ax.add_artist(plt.Circle((baslangic_sutun, baslangic_satir), 0.3, color='g'))
+for i in range(len(enkisarota) - 1):
+    ax.plot([enkisarota[i][1], enkisarota[i+1][1]],
+            [enkisarota[i][0], enkisarota[i+1][0]], color='b', linewidth=6)
+plt.show()     
     
